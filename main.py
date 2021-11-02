@@ -58,7 +58,9 @@ for i in range(len(my_json['Boards'])):
         print(id_number, "is not")
 
 for i in range(len(my_json['Parameters'])):
-    print(my_json['Parameters'][i])
+    if not my_json['Parameters'][i]["Name"]:
+        i += 1
+    print(my_json['Parameters'][i]["Name"])
 
 # checking name type
 for i in range(len(my_json['Boards'])):

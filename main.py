@@ -2,24 +2,57 @@ import json
 from jsonschema import validate
 
 canIDsSchema = {
-    "Boards": [
-        {
-            "ID": "number",
-            "Name": "PiBox"
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "Boards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          }
         },
-        {
-            "ID": "0x02",
-            "Name": "Steering wheel"
+        "required": [
+          "ID",
+          "Name"
+        ]
+      }
+    },
+    "Parameters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ID": {"type": "string"},
+          "Name": {"type": "string"},
+          "Type": dict(type="string", enum=[
+              "uint32",
+              "bool",
+              "float"
+          ]),
+          "MinID": {
+            "type": "string"
+          },
+          "MaxID": {
+            "type": "string"
+          }
         },
-        {
-            "ID": "0x10",
-            "Name": "Battery 1"
-        },
-        {
-            "ID": "0x11",
-            "Name": "Battery 2"
-        }
-    ],
+        "required": [
+          "Name",
+          "Type"
+        ]
+      }
+    }
+  },
+  "required": [
+    "Boards",
+    "Parameters"
+  ]
 }
 
 

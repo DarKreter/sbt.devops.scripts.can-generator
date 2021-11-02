@@ -26,7 +26,7 @@ canIDsSchema = {
 def isnumericbase(s, base):
     try:
         v = int(s, base)
-        print("true")
+        # print("true")
         return True
     except ValueError:
         return False
@@ -37,8 +37,7 @@ def ishexadecimalstring(s):
 
 
 # Convert json to python object.
-f = open('canIDs.json',)
-my_json = json.load(f)
+my_json = json.load(open('canIDs.json',))
 
 # Validate will raise exception if given json is not
 # what is described in schema.
@@ -46,3 +45,12 @@ validate(instance=my_json, schema=canIDsSchema)
 
 # print for debug
 # print(my_json)
+# print(my_json['Boards'][0]['ID'])
+
+for i in range(len(my_json['Boards'])):
+    id_number = my_json['Boards'][i]['ID']
+    if ishexadecimalstring(id_number):
+        print(id_number, "is hexadecimal")
+
+for i in range(len(my_json['Parameters'])):
+    print(my_json['Parameters'][i])

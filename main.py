@@ -10,12 +10,8 @@ canIDsSchema = {
       "items": {
         "type": "object",
         "properties": {
-          "ID": {
-            "type": "string"
-          },
-          "Name": {
-            "type": "string"
-          }
+          "ID": {"type": "string"},
+          "Name": {"type": "string"}
         },
         "required": [
           "ID",
@@ -30,17 +26,13 @@ canIDsSchema = {
         "properties": {
           "ID": {"type": "string"},
           "Name": {"type": "string"},
+          "MinID": {"type": "string"},
+          "MaxID": {"type": "string"},
           "Type": dict(type="string", enum=[
               "uint32",
               "bool",
               "float"
-          ]),
-          "MinID": {
-            "type": "string"
-          },
-          "MaxID": {
-            "type": "string"
-          }
+          ])
         },
         "required": [
           "Name",
@@ -93,12 +85,20 @@ for i in range(len(my_json['Boards'])):
         print("Boards_Name:", my_json['Boards'][i]['Name'], "- is not correct")
 
 
+print("\n")
+
+
 # PARAMETERS CHECKING
 # looking for name in Parameters
 for i in range(len(my_json['Parameters'])):
-    if not my_json['Parameters'][i]["Name"]:
-        i += 1
     print("Parameters_Name:", my_json['Parameters'][i]["Name"])
+    if not my_json['Parameters'][i]['ID']:
+        print("MinID:", my_json['Parameters'][i]['MinID'])
+        print("MaxID:", my_json['Parameters'][i]['MaxID'])
+    else:
+        print(print("ID:", my_json['Parameters'][i]['ID']))
+    print("Type:", my_json['Parameters'][i]["Type"])
+    print("\n")
 
 
 

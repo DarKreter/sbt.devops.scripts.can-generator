@@ -92,15 +92,9 @@ print("\n")
 # looking for name in Parameters
 for i in range(len(my_json['Parameters'])):
     print("Parameters_Name:", my_json['Parameters'][i]["Name"])
-    if not my_json['Parameters'][i]['ID']:
-        print("MinID:", my_json['Parameters'][i]['MinID'])
-        print("MaxID:", my_json['Parameters'][i]['MaxID'])
-    else:
-        print(print("ID:", my_json['Parameters'][i]['ID']))
+    print("ID:", my_json['Parameters'][i]['ID'])
+    # if na sprawdzenie czy min i max są
+    # print("MinID:", my_json['Parameters'][i]['MinID'])
+    # print("MaxID:", my_json['Parameters'][i]['MaxID'])
     print("Type:", my_json['Parameters'][i]["Type"])
     print("\n")
-
-
-
-
-

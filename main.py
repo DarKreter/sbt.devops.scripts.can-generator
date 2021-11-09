@@ -1,5 +1,8 @@
 import json
 from jsonschema import validate, draft7_format_checker
+import sys
+
+json_file = sys.argv[1:]
 
 canIDsSchema = {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -61,7 +64,7 @@ def ishexadecimalstring(s):
 
 
 # Convert json to python object.
-my_json = json.load(open('canIDs.json'))
+my_json = json.load(open(json_file[0]))
 # Validate will raise exception if given json is not
 # what is described in schema.
 validate(instance=my_json, schema=canIDsSchema)

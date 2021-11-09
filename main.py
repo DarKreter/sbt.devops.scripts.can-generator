@@ -1,5 +1,5 @@
 import json
-from jsonschema import validate
+from jsonschema import validate, draft7_format_checker
 
 canIDsSchema = {
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -61,7 +61,7 @@ def ishexadecimalstring(s):
 
 
 # Convert json to python object.
-my_json = json.load(open('canIDs.json', ))
+my_json = json.load(open('canIDs.json'))
 # Validate will raise exception if given json is not
 # what is described in schema.
 validate(instance=my_json, schema=canIDsSchema)
@@ -71,18 +71,22 @@ validate(instance=my_json, schema=canIDsSchema)
 for i in range(len(my_json['Boards'])):
     id_number = my_json['Boards'][i]['ID']
     if ishexadecimalstring(id_number):
-        print(id_number, "- is hexadecimal")
+        continue
+        # print(id_number, "- is hexadecimal")
     else:
-        print(id_number, "- is not")
+        print("error", my_json['Boards'][i]['ID'])
+        # print(id_number, "- is not")
 
 
 # checking name type in Boards
 for i in range(len(my_json['Boards'])):
     name_n = my_json['Boards'][i]['Name']
     if isinstance(name_n, str):
-        print("Boards_Name:", my_json['Boards'][i]['Name'], "- is correct")
+        continue
+        # print("Boards_Name:", my_json['Boards'][i]['Name'], "- is correct")
     else:
-        print("Boards_Name:", my_json['Boards'][i]['Name'], "- is not correct")
+        print("error", my_json['Boards'][i]['Name'])
+        # print("Boards_Name:", my_json['Boards'][i]['Name'], "- is not correct")
 
 
 print("\n")
@@ -92,9 +96,14 @@ print("\n")
 # looking for name in Parameters
 for i in range(len(my_json['Parameters'])):
     print("Parameters_Name:", my_json['Parameters'][i]["Name"])
-    print("ID:", my_json['Parameters'][i]['ID'])
+    # print("ID:", my_json['Parameters'][i]['ID'])
     # if na sprawdzenie czy min i max są
     # print("MinID:", my_json['Parameters'][i]['MinID'])
     # print("MaxID:", my_json['Parameters'][i]['MaxID'])
     print("Type:", my_json['Parameters'][i]["Type"])
-    print("\n")
+
+validate(
+    instance="2.3.5.6",
+    schema={"format": "ipv4"},
+    format_checker=draft7_format_checker,
+)

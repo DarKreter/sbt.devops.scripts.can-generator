@@ -23,7 +23,8 @@ canIDsSchema = {
       "type": "array",
       "items": {
         "type": "object",
-        "properties": {
+          "anyOf":[{
+            "properties": {
           "ID": {"type": "string"},
           "Name": {"type": "string"},
           "MinID": {"type": "string"},
@@ -33,7 +34,19 @@ canIDsSchema = {
               "bool",
               "float"
           ])
-        },
+        }},
+{
+            "properties": {
+          "Name": {"type": "string"},
+          "MinID": {"type": "string"},
+          "MaxID": {"type": "string"},
+          "Type": dict(type="string", enum=[
+              "uint32",
+              "bool",
+              "float"
+          ])
+        }},
+              ],
         "required": [
           "Name",
           "Type"
@@ -96,7 +109,7 @@ print("\n")
 # looking for name in Parameters
 for i in range(len(my_json['Parameters'])):
     print("Parameters_Name:", my_json['Parameters'][i]["Name"])
-    # print("ID:", my_json['Parameters'][i]['ID'])
+    # if not print("ID:", my_json['Parameters'][i]['ID']):
     # if na sprawdzenie czy min i max są
     # print("MinID:", my_json['Parameters'][i]['MinID'])
     # print("MaxID:", my_json['Parameters'][i]['MaxID'])
@@ -107,3 +120,4 @@ validate(
     schema={"format": "ipv4"},
     format_checker=draft7_format_checker,
 )
+

@@ -23,30 +23,31 @@ canIDsSchema = {
       "type": "array",
       "items": {
         "type": "object",
-          "anyOf":[{
-            "properties": {
-          "ID": {"type": "string"},
-          "Name": {"type": "string"},
-          "MinID": {"type": "string"},
-          "MaxID": {"type": "string"},
-          "Type": dict(type="string", enum=[
-              "uint32",
-              "bool",
-              "float"
-          ])
-        }},
-{
-            "properties": {
-          "Name": {"type": "string"},
-          "MinID": {"type": "string"},
-          "MaxID": {"type": "string"},
-          "Type": dict(type="string", enum=[
-              "uint32",
-              "bool",
-              "float"
-          ])
-        }},
-              ],
+        "anyOf": [
+            {
+             "properties": {
+              "ID": {"type": "string"},
+              "Name": {"type": "string"},
+                "Type": dict(type="string", enum=[
+                    "uint32",
+                    "bool",
+                    "float"
+                    ])
+                }
+            },
+            {
+             "properties": {
+              "Name": {"type": "string"},
+              "MinID": {"type": "string"},
+              "MaxID": {"type": "string"},
+              "Type": dict(type="string", enum=[
+                 "uint32",
+                 "bool",
+                 "float"
+                 ])
+              }
+            },
+        ],
         "required": [
           "Name",
           "Type"
@@ -120,4 +121,3 @@ validate(
     schema={"format": "ipv4"},
     format_checker=draft7_format_checker,
 )
-

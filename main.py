@@ -1,5 +1,5 @@
 import json
-from jsonschema import validate, draft7_format_checker
+from jsonschema import validate
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -28,11 +28,11 @@ canIDsSchema = {
       "type": "array",
       "items": {
         "type": "object",
-        "anyOf": [
-            {
-             "properties": {
-              "ID": {"type": "string"},
-              "Name": {"type": "string"},
+              "properties": {
+                "ID": {"type": "string"},
+                "MinID": {"type": "string"},
+                "MaxID": {"type": "string"},
+                "Name": {"type": "string"},
                 "Type": dict(type="string", enum=[
                     "uint32",
                     "bool",
@@ -40,30 +40,27 @@ canIDsSchema = {
                     ])
                 }
             },
+    "required": {
+          "anyOf": [
             {
-             "properties": {
-              "Name": {"type": "string"},
-              "MinID": {"type": "string"},
-              "MaxID": {"type": "string"},
-              "Type": dict(type="string", enum=[
-                 "uint32",
-                 "bool",
-                 "float"
-                 ])
-              }
+              "ID",
+              "Name",
+              "Type",
             },
-        ],
-        "required": [
-          "Name",
-          "Type"
-        ]
-      }
-    }
-  },
+            {
+              "MinID",
+              "MaxID",
+              "Name",
+              "Type"
+            }
+          ]
+      },
+    },
   "required": [
     "Boards",
     "Parameters"
-  ]
+   ]
+  }
 }
 
 
@@ -120,4 +117,3 @@ for i in range(len(my_json['Parameters'])):
     # print("MinID:", my_json['Parameters'][i]['MinID'])
     # print("MaxID:", my_json['Parameters'][i]['MaxID'])
     print("Type:", my_json['Parameters'][i]["Type"])
-

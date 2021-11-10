@@ -121,8 +121,3 @@ for i in range(len(my_json['Parameters'])):
     # print("MaxID:", my_json['Parameters'][i]['MaxID'])
     print("Type:", my_json['Parameters'][i]["Type"])
 
-validate(
-    instance="2.3.5.6",
-    schema={"format": "ipv4"},
-    format_checker=draft7_format_checker,
-)

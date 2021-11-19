@@ -15,8 +15,13 @@ canIDsSchema = {
       "items": {
         "type": "object",
         "properties": {
-          "ID": {"type": "string"},
-          "Name": {"type": "string"}
+          "ID": {
+            "type": "string",
+            "pattern": "^(0[xX])[A-Fa-f0-9]+$"
+          },
+          "Name": {
+            "type": "string"
+          }
         },
         "required": [
           "ID",
@@ -28,39 +33,55 @@ canIDsSchema = {
       "type": "array",
       "items": {
         "type": "object",
-              "properties": {
-                "ID": {"type": "string"},
-                "MinID": {"type": "string"},
-                "MaxID": {"type": "string"},
-                "Name": {"type": "string"},
-                "Type": dict(type="string", enum=[
-                    "uint32",
-                    "bool",
-                    "float"
-                    ])
-                }
-            },
-    "required": {
-          "anyOf": [
-            {
+        "properties": {
+          "ID": {
+            "type": "string",
+            "pattern": "^(0[xX])[A-Fa-f0-9]+$"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Type": {
+            "type": "string",
+            "enum": [
+              "uint32",
+              "bool",
+              "float"
+            ]
+          },
+          "MinID": {
+            "type": "string",
+            "pattern": "^(0[xX])[A-Fa-f0-9]+$"
+          },
+          "MaxID": {
+            "type": "string",
+            "pattern": "^(0[xX])[A-Fa-f0-9]+$"
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
               "ID",
               "Name",
-              "Type",
-            },
-            {
+              "Type"
+            ]
+          },
+          {
+            "required": [
               "MinID",
               "MaxID",
               "Name",
               "Type"
-            }
-          ]
-      },
-    },
+            ]
+          }
+        ],
+      }
+    }
+  },
   "required": [
     "Boards",
     "Parameters"
-   ]
-  }
+  ]
 }
 
 

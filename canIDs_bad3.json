@@ -56,19 +56,5 @@
             "Name": "Altitude",
             "Type": "float"
         }
-    ], 
-    "ParametersOverwrite": [
-        {
-            "Board": {
-                "ID": "0x10"
-            }, 
-            "Parameters":[
-                {
-                    "MinID": "0x0050",
-                    "MaxID": "0x006F",
-                    "Name": "Battery cell <x> voltage"
-                }
-            ]
-        }
     ]
 }

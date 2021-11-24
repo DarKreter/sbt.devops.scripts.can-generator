@@ -31,5 +31,6 @@ def compare_min_and_max(Min, Max):
         print("Wrong MinID and MaxID input")
 
 
-for j in my_json:
-    compare_min_and_max(my_json['Parameters'][2]['MinID'], my_json['Parameters'][2]["MaxID"])
+for j in range(len(my_json)):
+    if 'ID' not in my_json['Parameters'][j]:
+        compare_min_and_max(my_json['Parameters'][j]['MinID'], my_json['Parameters'][j]["MaxID"])

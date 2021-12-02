@@ -1,9 +1,9 @@
 import json
-from jsonschema import validate, Draft7Validator
+from jsonschema import validate  # , Draft7Validator
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("json_file", type=str, help="input JSON filename with extention")
+parser.add_argument("json_file", type=str, help="input JSON filename with extension")
 parser.add_argument("schema", type=str, help="input JSON filename with schema")
 args = parser.parse_args()
 
@@ -60,3 +60,8 @@ not_double_name()
 
 # parameters muszą mieć osobne pozycje, więc trzeba będize każdy obiekt "zapisac do osobnej zmiennej"
 # aby później generować plik hpp dla każdego osobnego parametru z indywidualnym ID
+
+
+# TODO
+# jezeli jest MinID i MaxID, musi być placeholder w postaci str "<x>"
+# zapakować w klasę checker(json, json_schema) -> checker.runChecks()

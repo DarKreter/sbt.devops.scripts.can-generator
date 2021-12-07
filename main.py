@@ -1,3 +1,7 @@
+# TODO jezeli jest MinID i MaxID, musi być placeholder w postaci str "<x>";
+#  zapakować w klasę checker(json, json_schema) -> checker.runChecks()
+#  parameters muszą mieć osobne pozycje, więc trzeba będize każdy obiekt "zapisac do osobnej zmiennej"
+#  aby później generować plik hpp dla każdego osobnego parametru z indywidualnym ID
 import json
 from jsonschema import validate  # , Draft7Validator
 import argparse
@@ -20,24 +24,12 @@ def convert_json_to_python(file1, file2):
     return _json
 
 
-# check weather MinID is smaller than MaxID
-def compare_min_and_max(mi, ma):
-    if int(mi, 16) >> int(ma, 16):
-        print("Wrong MinID and MaxID input")
-
-
-for j in range(len(my_json)):
-    if 'ID' not in my_json['Parameters'][j]:
-        compare_min_and_max(my_json['Parameters'][j]['MinID'], my_json['Parameters'][j]["MaxID"])
-# TODO jezeli jest MinID i MaxID, musi być placeholder w postaci str "<x>";
-#  zapakować w klasę checker(json, json_schema) -> checker.runChecks()
-#  parameters muszą mieć osobne pozycje, więc trzeba będize każdy obiekt "zapisac do osobnej zmiennej"
-#  aby później generować plik hpp dla każdego osobnego parametru z indywidualnym ID
-
-
 class Checker:
-    def __init__(self):
+    json_object = {}
+
+    def __init__(self, json_file, jsonschema):
         print("new object")
+        Checker.json_object = convert_json_to_python(json_file, jsonschema)
 
     def check_placeholder(self, m_json):
         for i in range(len(m_json)):
@@ -65,9 +57,21 @@ class Checker:
                 if name_parameters[i] == name_parameters[i + 1]:
                     print("parameters name error")
 
-    def run_checks(self):
-        # validate
-        ob = convert_json_to_python(args.json_file, args.schema)
-        Checker.check_placeholder(ob)
-        Checker.not_double_name(ob)
+    # check weather MinID is smaller than MaxID
+    def compare_min_and_max(self, first, last):
+        if int(first, 16) >> int(last, 16):
+            print("Wrong MinID and MaxID input")
 
+    def compare_loop(self, my_json):
+        for j in range(len(my_json)):
+            if 'ID' not in my_json['Parameters'][j]:
+                Checker.compare_min_and_max(self, my_json['Parameters'][j]['MinID'], my_json['Parameters'][j]["MaxID"])
+
+    def run_checks(self, ob):
+        Checker.check_placeholder(self, ob)
+        Checker.not_double_name(self, ob)
+        Checker.compare_loop(self, ob)
+
+
+jsonf = Checker(args.json_file, args.schema)
+jsonf.run_checks(jsonf.json_object)

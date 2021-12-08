@@ -1,5 +1,4 @@
 # TODO jezeli jest MinID i MaxID, musi być placeholder w postaci str "<x>";
-#  zapakować w klasę checker(json, json_schema) -> checker.runChecks()
 #  parameters muszą mieć osobne pozycje, więc trzeba będize każdy obiekt "zapisac do osobnej zmiennej"
 #  aby później generować plik hpp dla każdego osobnego parametru z indywidualnym ID
 import json
@@ -28,13 +27,12 @@ class Checker:
     json_object = {}
 
     def __init__(self, json_file, jsonschema):
-        print("new object")
         Checker.json_object = convert_json_to_python(json_file, jsonschema)
 
     def check_placeholder(self, m_json):
-        for i in range(len(m_json)):
+        for i in range(len(m_json['Parameters'])):
             if 'ID' not in m_json['Parameters'][i]:
-                if "(<x>)$" in m_json['Parameters'][i]:
+                if m_json['Parameters'][i]["Name"].endswith("<x>"):
                     print("correct")
                 else:
                     print('not correct')

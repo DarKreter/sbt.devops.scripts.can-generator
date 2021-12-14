@@ -23,11 +23,14 @@ def convert_json_to_python(file1, file2):
     return _json
 
 
+python_json = convert_json_to_python(args.json_file, args.schema)
+
+
 class Checker:
     json_object = {}
 
-    def __init__(self, json_file, jsonschema):
-        Checker.json_object = convert_json_to_python(json_file, jsonschema)
+    def __init__(self, python_json_ob):
+        self.json_object = python_json_ob
 
     def check_placeholder(self, m_json):
         for i in range(len(m_json['Parameters'])):
@@ -71,5 +74,5 @@ class Checker:
         Checker.compare_loop(self, ob)
 
 
-jsonf = Checker(args.json_file, args.schema)
-jsonf.run_checks(jsonf.json_object)
+check = Checker(python_json)
+check.run_checks(check.json_object)

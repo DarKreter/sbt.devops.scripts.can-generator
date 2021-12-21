@@ -1,5 +1,4 @@
-# TODO jezeli jest MinID i MaxID, musi być placeholder w postaci str "<x>";
-#  parameters muszą mieć osobne pozycje, więc trzeba będize każdy obiekt "zapisac do osobnej zmiennej"
+# TODO  parameters muszą mieć osobne pozycje, więc trzeba będize każdy obiekt "zapisac do osobnej zmiennej"
 #  aby później generować plik hpp dla każdego osobnego parametru z indywidualnym ID
 import json
 from jsonschema import validate  # , Draft7Validator
@@ -35,10 +34,10 @@ class Checker:
     def check_placeholder(self, m_json):
         for i in range(len(m_json['Parameters'])):
             if 'ID' not in m_json['Parameters'][i]:
-                if m_json['Parameters'][i]["Name"].endswith("<x>"):
-                    print("correct")
+                if str(m_json['Parameters'][i]['Name']).find("<x>") != -1:
+                    continue
                 else:
-                    print('not correct')
+                    print("error, placeholder")
 
     def not_double_name(self, m_json):
         name_board = []
@@ -76,3 +75,5 @@ class Checker:
 
 check = Checker(python_json)
 check.run_checks(check.json_object)
+objects = []
+

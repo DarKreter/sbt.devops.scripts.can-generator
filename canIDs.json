@@ -32,7 +32,7 @@
         {
             "MinID": "0x0050",
             "MaxID": "0x008F",
-            "Name": "Voltage channel <x>", 
+            "Name": "Voltage channel <x>",
             "Type": "float"
         },
         {

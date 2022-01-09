@@ -45,11 +45,11 @@ class Checker:
             if 'ID' not in my_json['Parameters'][j]:
                 Checker.compare_min_and_max(self, my_json['Parameters'][j]['MinID'], my_json['Parameters'][j]["MaxID"])
 
-    def validate_schema(self, ob, python_json_schema):
-        validate(instance=ob, schema=python_json_schema)
-
+    def validate_schema(self, python_json_object, python_json_schema):
+        validate(python_json_object, python_json_schema)
+        
     def run_checks(self, ob):
-        Checker.validate_schema(self, Checker.json_object, Checker.json_schema)
+        Checker.validate_schema(self, self.json_object, self.json_schema)
         Checker.check_placeholder(self, ob)
         Checker.not_double_name(self, ob)
         Checker.compare_loop(self, ob)

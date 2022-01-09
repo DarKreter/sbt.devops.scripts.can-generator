@@ -1,6 +1,7 @@
 # TODO  parameters muszą mieć osobne pozycje, więc trzeba będize każdy obiekt "zapisac do osobnej zmiennej"
 #  aby później generować plik hpp dla każdego osobnego parametru z indywidualnym ID
 import argparse
+import jsonschema
 import json  # , Draft7Validator
 from checker_class import Checker
 

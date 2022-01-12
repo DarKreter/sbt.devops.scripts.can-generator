@@ -1,11 +1,16 @@
 IF_N_DEF_STRING= "#ifndef F1XX_PROJECT_TEMPLATE_LIB_SBT_SDK_F1XX_SBT_SDK_SYSTEM_{}_H\n"
 DEFINE_STRING = "#define F1XX_PROJECT_TEMPLATE_LIB_SBT_SDK_F1XX_SBT_SDK_SYSTEM_{}_H\n\n"
 INCLUDE_STRING = "#include <cstdint>\n"
-NAMESPACE_STRING = "namespace SBT {\n\
+NAMESPACE_BEGIN_STRING = "namespace SBT {\n\
 namespace System {\n\
 namespace Communication {\n\n"
-ENUM_CLASS_UINT8 = "enum class CANBoardID : uint8_t {\n  "
-ENUM_CLASS_UINT16 = "enum class CANParameterID : uint16_t {\n  "
+NAMESPACE_END_STRING = "} // enum CanParameterID\n} \
+//namespace SBT\n} \
+// namespace System\n} \
+// namespace Communication"
+ENUM_CLASS_CAN_BOARD_ID_BEGIN = "enum class CANBoardID : uint8_t {\n  "
+ENUM_CLASS_CAN_PARAMETERS_ID_BEGIN = "enum class CANParameterID : uint16_t {\n  "
+
 
 class HGenerate:
 	
@@ -33,7 +38,8 @@ class HGenerate:
 			file.write(IF_N_DEF_STRING.format(self.name[0:self.name.index('.')]))
 			file.write(DEFINE_STRING.format(self.name[0:self.name.index('.')]))
 			file.write(INCLUDE_STRING)
-			file.write(ENUM_CLASS_UNIT8)
+			file.write(NAMESPACE_BEGIN_STRING)
+			file.write(ENUM_CLASS_CAN_BOARD_ID_BEGIN)
 			# for loop
 			for i in range(len(json_object["Boards"])):
 				if 'ID' not in json_object['Boards'][i]:
@@ -44,7 +50,7 @@ class HGenerate:
 					file.write(json_object['Boards'][i]["Name"] + " = ")
 					file.write(json_object["Boards"][i]['ID'] + '\n  ')
 			file.write("} // enum CanBoardsID\n\n")
-			file.write(ENUM_CLASS_UNIT16)
+			file.write(ENUM_CLASS_CAN_PARAMETERS_ID_BEGIN)
 			for i in range(len(json_object["Parameters"])):
 				if 'ID' not in json_object['Parameters'][i]:
 					generator = self.id_range_loop(json_object, i, "Parameters")
@@ -53,5 +59,4 @@ class HGenerate:
 				else:
 					file.write(json_object['Parameters'][i]["Name"] + " = ")
 					file.write(json_object["Parameters"][i]['ID'] + '\n  ')
-			file.write("} // enum CanParameterID\n} //namespace SBT\n} \
-				// namespace System\n} // namespace Communication")
+			file.write(NAMESPACE_END_STRING)

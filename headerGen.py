@@ -1,6 +1,9 @@
-IF_N_DEF_STRING= "#ifndef F1XX_PROJECT_TEMPLATE_LIB_SBT_SDK_F1XX_SBT_SDK_SYSTEM_{}_H\n"
-DEFINE_STRING = "#define F1XX_PROJECT_TEMPLATE_LIB_SBT_SDK_F1XX_SBT_SDK_SYSTEM_{}_H\n\n"
-INCLUDE_STRING = "#include <cstdint>\nnamespace SBT {\nnamespace System {\nnamespace Communication {\n\n"
+IF_N_DEF_STRING= "#ifndef F1XX_PROJECT_TEMPLATE_LIB_SBT_SDK_F1XX_\
+SBT_SDK_SYSTEM_{}_H\n"
+DEFINE_STRING = "#define F1XX_PROJECT_TEMPLATE_LIB_SBT_SDK_F1XX_\
+SBT_SDK_SYSTEM_{}_H\n\n"
+INCLUDE_STRING = "#include <cstdint>\nnamespace SBT {\nnamespace System \
+{\nnamespace Communication {\n\n"
 ENUM_CLASS_UNIT8 = "enum class CANBoardID : unit8_t {\n  "
 ENUM_CLASS_UNIT16 = "enum class CANParameterID : unit16_t {\n  "
 
@@ -19,7 +22,8 @@ class HGenerate:
 		x = 0
 		for j in range(len(adresses)):
 			x += 1
-			yield(json_object[rng][i]["Name"].replace("<x>", str(x)) + " = " + str(adresses[j]) + '\n  ')
+			yield(json_object[rng][i]["Name"].replace("<x>", str(x)) +\
+			 " = " + str(adresses[j]) + '\n  ')
 			
 
 	def write_to_file(self, json_object):
@@ -49,6 +53,5 @@ class HGenerate:
 				else:
 					file.write(json_object['Parameters'][i]["Name"] + " = ")
 					file.write(json_object["Parameters"][i]['ID'] + '\n  ')
-			file.write("} // enum CanParameterID\n} //namespace SBT\n} // namespace System\n} // namespace Communication")
-
-
+			file.write("} // enum CanParameterID\n} //namespace SBT\n} \
+				// namespace System\n} // namespace Communication")

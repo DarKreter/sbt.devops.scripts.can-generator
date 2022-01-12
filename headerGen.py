@@ -11,18 +11,19 @@ class HGenerate:
 		self.enum8 = "enum class CANBoardID : unit8_t {\n  "
 		self.enum16 = "enum class CANParameterID : unit16_t {\n  "
 
-	def id_range_loop(self, json_object, i, file, rng):
+	def id_range_loop(self, json_object, i, rng):
 		max_id = int(json_object[rng][i]['MaxID'], 16)
 		curr_id = int(json_object[rng][i]['MinID'], 16)
 		adresses = []
 		while(max_id >= curr_id):
 			adresses.append(hex(curr_id))
 			curr_id = curr_id + 1
-		x = 1
+		x = 0
 		for j in range(len(adresses)):
-			file.write(json_object[rng][i]["Name"].replace("<x>", str(x)) + " = " + str(adresses[j]) + '\n  ')
 			x += 1
+			yield(json_object[rng][i]["Name"].replace("<x>", str(x)) + " = " + str(adresses[j]) + '\n  ')
 			
+
 	def write_to_file(self, json_object):
 		# check if file allready exist
 
@@ -33,7 +34,9 @@ class HGenerate:
 			# for loop
 			for i in range(len(json_object["Boards"])):
 				if 'ID' not in json_object['Boards'][i]:
-					self.id_range_loop(json_object, i, file, "Boards")
+					generator = self.id_range_loop(json_object, i, "Boards")
+					for j in generator:
+						file.write(j)
 				else:
 					file.write(json_object['Boards'][i]["Name"] + " = ")
 					file.write(json_object["Boards"][i]['ID'] + '\n  ')
@@ -41,7 +44,9 @@ class HGenerate:
 			file.write(self.enum16)
 			for i in range(len(json_object["Parameters"])):
 				if 'ID' not in json_object['Parameters'][i]:
-					self.id_range_loop(json_object, i, file, "Parameters")
+					generator = self.id_range_loop(json_object, i, "Parameters")
+					for j in generator:
+						file.write(j)
 				else:
 					file.write(json_object['Parameters'][i]["Name"] + " = ")
 					file.write(json_object["Parameters"][i]['ID'] + '\n  ')

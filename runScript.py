@@ -12,7 +12,6 @@ parser.add_argument("schema", type=str, help="input JSON filename with schema")
 parser.add_argument("header_name", type=str, help="input new file name")
 args = parser.parse_args()
 
-
 def convert_json_to_python(file1, file2):
     # Convert json to python object.
     with open(file1) as to_check:
@@ -28,5 +27,5 @@ python_json, python_schema = convert_json_to_python(args.json_file, args.schema)
 check = Checker(python_json, python_schema)
 check.run_checks(check.json_object)
 objects = []
-genFile = HGenerate("tescik")
+genFile = HGenerate(args.header_name[0:args.header_name.index('.')])
 genFile.write_to_file(args.header_name, python_json)

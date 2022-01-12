@@ -1,11 +1,11 @@
-IF_N_DEF_STRING= "#ifndef F1XX_PROJECT_TEMPLATE_LIB_SBT_SDK_F1XX_\
-SBT_SDK_SYSTEM_{}_H\n"
-DEFINE_STRING = "#define F1XX_PROJECT_TEMPLATE_LIB_SBT_SDK_F1XX_\
-SBT_SDK_SYSTEM_{}_H\n\n"
-INCLUDE_STRING = "#include <cstdint>\nnamespace SBT {\nnamespace System \
-{\nnamespace Communication {\n\n"
-ENUM_CLASS_UNIT8 = "enum class CANBoardID : unit8_t {\n  "
-ENUM_CLASS_UNIT16 = "enum class CANParameterID : unit16_t {\n  "
+IF_N_DEF_STRING= "#ifndef F1XX_PROJECT_TEMPLATE_LIB_SBT_SDK_F1XX_SBT_SDK_SYSTEM_{}_H\n"
+DEFINE_STRING = "#define F1XX_PROJECT_TEMPLATE_LIB_SBT_SDK_F1XX_SBT_SDK_SYSTEM_{}_H\n\n"
+INCLUDE_STRING = "#include <cstdint>\n"
+NAMESPACE_STRING = "namespace SBT {\n\
+namespace System {\n\
+namespace Communication {\n\n"
+ENUM_CLASS_UINT8 = "enum class CANBoardID : uint8_t {\n  "
+ENUM_CLASS_UINT16 = "enum class CANParameterID : uint16_t {\n  "
 
 class HGenerate:
 	

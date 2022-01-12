@@ -4,6 +4,7 @@ import argparse
 import jsonschema
 import json  # , Draft7Validator
 from checker_class import Checker
+from headerGen import HGenerate
 
 parser = argparse.ArgumentParser()
 parser.add_argument("json_file", type=str, help="input JSON filename with extension")
@@ -26,3 +27,5 @@ python_json, python_schema = convert_json_to_python(args.json_file, args.schema)
 check = Checker(python_json, python_schema)
 check.run_checks(check.json_object)
 objects = []
+genFile = HGenerate("tescik")
+genFile.write_to_file("test.txt", python_json)

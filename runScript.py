@@ -1,5 +1,3 @@
-# TODO  parameters muszą mieć osobne pozycje, więc trzeba będize każdy obiekt "zapisac do osobnej zmiennej"
-#  aby później generować plik hpp dla każdego osobnego parametru z indywidualnym ID
 import argparse
 import jsonschema
 import json  # , Draft7Validator
@@ -27,5 +25,5 @@ python_json, python_schema = convert_json_to_python(args.json_file, args.schema)
 check = Checker(python_json, python_schema)
 check.run_checks(check.json_object)
 objects = []
-genFile = HGenerate(args.header_name[0:args.header_name.index('.')])
-genFile.write_to_file(args.header_name, python_json)
+genFile = HGenerate(args.header_name)
+genFile.write_to_file(python_json)

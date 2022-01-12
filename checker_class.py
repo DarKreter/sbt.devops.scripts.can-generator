@@ -48,6 +48,10 @@ class Checker:
     def validate_schema(self, python_json_object, python_json_schema):
         validate(python_json_object, python_json_schema)
         
+    def detect_collisions(self, json_object):
+        pass
+
+
     def run_checks(self, ob):
         Checker.validate_schema(self, self.json_object, self.json_schema)
         Checker.check_placeholder(self, ob)

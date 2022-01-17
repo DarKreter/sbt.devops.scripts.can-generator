@@ -1,19 +1,23 @@
 {
     "Boards": [
         {
-            "ID": "0x01",
+            "ID": "0x10001",
             "Name": "PiBox"
         },
         {
-            "ID": "0x02",
+            "ID": "0x10001",
+            "Name": "PiBox2"
+        },
+        {
+            "ID": "0x0002",
             "Name": "Steering wheel"
         },
         {
-            "ID": "0x10",
+            "ID": "0x0010",
             "Name": "Battery 1"
         },
         {
-            "ID": "0x11",
+            "ID": "0x0011",
             "Name": "Battery 2"
         }
     ],
@@ -24,7 +28,7 @@
             "Type": "uint32"
         },
         {
-            "MinID": "0x0010",
+            "MinID": "0x0012",
             "MaxID": "0x004F",
             "Name": "Binary channel <x>", 
             "Type": "bool"
@@ -42,7 +46,7 @@
             "Type": "float"
         },
         {
-            "ID": "0x0100",
+            "ID": "0x10011",
             "Name": "Latitude",
             "Type": "float"
         },

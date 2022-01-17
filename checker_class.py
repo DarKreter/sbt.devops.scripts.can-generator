@@ -45,15 +45,53 @@ class Checker:
             if 'ID' not in my_json['Parameters'][j]:
                 Checker.compare_min_and_max(self, my_json['Parameters'][j]['MinID'], my_json['Parameters'][j]["MaxID"])
 
-    def validate_schema(self, python_json_object, python_json_schema):
-        validate(python_json_object, python_json_schema)
-        
-    def detect_collisions(self, json_object):
-        pass
+    def id_range_loop(self, json_object, i, rng):
+        max_id = int(json_object[rng][i]['MaxID'], 16)
+        curr_id = int(json_object[rng][i]['MinID'], 16)
+        adresses = []
+        while(max_id >= curr_id):
+            adresses.append(hex(curr_id))
+            curr_id = curr_id + 1
+        for j in range(len(adresses)):
+            yield(adresses[j])
 
+    def unique_table_loop(self, table):
+        for elem in table:
+            if table.count(elem) > 1:
+                return True
+            return False
+
+    def check_for_adress_colision(self, json_object):
+        table_of_adresses = []
+        for i in range(len(json_object["Boards"])):
+            if 'ID' not in json_object['Boards'][i]:
+                generator = self.id_range_loop(json_object, i, "Boards")
+                for j in generator:
+                    table_of_adresses.append(j)
+            else:
+                table_of_adresses.append(hex(int(json_object["Boards"][i]['ID'], 16)))
+        for i in range(len(json_object["Parameters"])):
+            if 'ID' not in json_object['Parameters'][i]:
+                generator = self.id_range_loop(json_object, i, "Parameters")
+                for j in generator:
+                    table_of_adresses.append(j)
+            else:
+                table_of_adresses.append(hex(int(json_object["Parameters"][i]['ID'], 16)))
+        #table_of_adresses.sort()
+        #print(table_of_adresses)
+        if len(table_of_adresses) == len(set(table_of_adresses)):
+            print("are unique")
+            pass
+        else:
+            print("not unique")
+        #if(Checker.unique_table_loop(self, table_of_adresses)):
+        #    print("There are duplicates")
+        #else:
+        #    print("There are no duplicates")
 
     def run_checks(self, ob):
-        Checker.validate_schema(self, self.json_object, self.json_schema)
+        validate(self.json_object, self.json_schema)
         Checker.check_placeholder(self, ob)
         Checker.not_double_name(self, ob)
         Checker.compare_loop(self, ob)
+        Checker.check_for_adress_colision(self, self.json_object)

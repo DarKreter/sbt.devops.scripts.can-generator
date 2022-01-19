@@ -1,0 +1,5 @@
+to run script you need to type:
+
+on linux: ```python3 runScript.py canIDs.json canIDsSchema.json text.txt```
+
+where `text.txt` is the output headder file name

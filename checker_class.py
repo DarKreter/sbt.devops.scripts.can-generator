@@ -77,16 +77,15 @@ class Checker:
                     table_of_adresses.append(j)
             else:
                 table_of_adresses.append(hex(int(json_object["Parameters"][i]['ID'], 16)))
-        #table_of_adresses.sort()
-        #print(table_of_adresses)
+        # table_of_adresses.sort()
+        # print(table_of_adresses)
         if len(table_of_adresses) == len(set(table_of_adresses)):
             print("are unique")
-            pass
         else:
             print("not unique")
-        #if(Checker.unique_table_loop(self, table_of_adresses)):
+        # if(Checker.unique_table_loop(self, table_of_adresses)):
         #    print("There are duplicates")
-        #else:
+        # else:
         #    print("There are no duplicates")
 
     def run_checks(self, ob):

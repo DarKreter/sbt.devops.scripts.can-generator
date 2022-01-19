@@ -1,6 +1,5 @@
 import argparse
 import jsonschema
-import json  # , Draft7Validator
 from checker_class import Checker
 from headerGen import HGenerate
 

@@ -25,12 +25,12 @@
         },
         {
             "MinID": "0x0010",
+            "MaxID": "0x0020",
             "Name": "Binary channel <x>", 
             "Type": "bool"
         },
         {
             "MinID": "0x0050",
-            "MaxID": "0x008F",
             "Name": "Voltage channel <x>", 
             "Type": "float"
         },

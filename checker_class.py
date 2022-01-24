@@ -1,13 +1,14 @@
-from jsonschema import validate
-
+import jsonschema
+import json
 
 class Checker:
     json_object = {}
     json_schema = {}
 
-    def __init__(self, python_json_ob, python_json_schema):
+    def __init__(self, python_json_ob, python_json_schema, json_file_arg):
         self.json_object = python_json_ob
         self.json_schema = python_json_schema
+        self.json_path = json_file_arg
 
     def check_placeholder(self, m_json):
         for i in range(len(m_json['Parameters'])):
@@ -88,9 +89,32 @@ class Checker:
         # else:
         #    print("There are no duplicates")
 
+
+
+#    errors
+    def validate(self, json_object, json_schema):
+        try:
+            jsonschema.validate(instance=json_object, schema=json_schema)
+            return 1
+        except jsonschema.exceptions.ValidationError as ex:
+            print(ex.instance)
+            lookup = str(ex.instance)
+            if lookup[0] == '{':
+                lookup = lookup[1:lookup.find(',')]
+                lookup = lookup.replace('\'','\"')
+            with open(self.json_path) as myFile:
+                for (num, line) in enumerate(myFile, 1):
+                    if lookup in line:
+                        print('found at line:', num)
+            return 0
+
     def run_checks(self, ob):
-        validate(self.json_object, self.json_schema)
-        Checker.check_placeholder(self, ob)
-        Checker.not_double_name(self, ob)
-        Checker.compare_loop(self, ob)
-        Checker.check_for_adress_colision(self, self.json_object)
+        if(Checker.validate(self, self.json_object, self.json_schema)):
+            Checker.check_placeholder(self, ob)
+            Checker.not_double_name(self, ob)
+            Checker.compare_loop(self, ob)
+            Checker.check_for_adress_colision(self, self.json_object)
+            return 1
+        else:
+            return 0
+            

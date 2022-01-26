@@ -2,11 +2,13 @@ import argparse
 import json
 from checker_class import Checker
 from headerGen import HGenerate
+from visualiseGen import VGenerate
 
 parser = argparse.ArgumentParser()
 parser.add_argument("json_file", type=str, help="input JSON filename with extension")
 parser.add_argument("schema", type=str, help="input JSON filename with schema")
 parser.add_argument("header_name", type=str, help="input new file name")
+parser.add_argument("visual_name", type=str, help="input new file name")
 args = parser.parse_args()
 
 
@@ -26,3 +28,5 @@ check = Checker(python_json, python_schema, args.json_file)
 if check.run_checks(check.json_object):
     genFile = HGenerate(args.header_name)
     genFile.write_to_file(python_json)
+    visual = VGenerate(args.visual_name)
+    visual.write_to_file(python_json)

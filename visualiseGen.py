@@ -13,9 +13,9 @@
 #         {0x0010, "MPPT Voltage 1"},
 #         {0x0011, "MPPT Voltage 2"}
 # };
-QMAP_QUINT8_QSTRING_PARAMETERSDICT_BOARD = "QMap<quint8, QString> ParametersDict::_boardsDict = {\n"
-QMAP_QUINT16_QSTRING_PARAMETERSDICT_PARAMETERS = "QMap<quint16, QString> ParametersDict::_paramsDict = {\n"
-INCLUDE = "#include \"ParametersDict.h\"\n"
+QMAP_QUINT8_QSTRING_PARAMETERSDICT_BOARD = "QMap<quint8, QString> ParametersDict::_boardsDict = {\n  "
+QMAP_QUINT16_QSTRING_PARAMETERSDICT_PARAMETERS = "QMap<quint16, QString> ParametersDict::_paramsDict = {\n  "
+INCLUDE = "#include \"parametersDict.h\"\n\n"
 
 
 class VGenerate:
@@ -30,22 +30,49 @@ class VGenerate:
         while max_id >= curr_id:
             addresses.append(hex(curr_id))
             curr_id = curr_id + 1
-        yield 
+        x = 0
+        for j in range(len(addresses)):
+            x += 1
+            body = "{" + f'{addresses[j]}, \"{json_object[rng][i]["Name"].replace("<x>", str(x))}\"' + "}"
+            if j != len(addresses):
+                body += ",\n  "
+            else:
+                body += "\n  "
+            yield body
 
     def write_to_file(self, json_object):
-        self.name.write(INCLUDE)
-        self.name.write(QMAP_QUINT8_QSTRING_PARAMETERSDICT_BOARD)
-        # dict loop
-        for i in range(len(json_object["Boards"])):
-            if 'ID' not in json_object['Boards'][i]:
-                generator = self.id_range_loop(json_object, i, "Boards")
-                for j in generator:
-                    self.name.write(j)
-            else:
-                self.name.write(json_object['Boards'][i]["Name"] + " = ")
-                self.name.write(json_object["Boards"][i]['ID'] + '\n  ')
-        self.name.write("};")
-        self.name.write(QMAP_QUINT16_QSTRING_PARAMETERSDICT_PARAMETERS)
-        # dict loop
-        self.name.write("};")
-        pass
+        with open(self.name, "w") as file:
+            file.write(INCLUDE)
+            file.write(QMAP_QUINT8_QSTRING_PARAMETERSDICT_BOARD)
+            # dict loop
+            size = len(json_object["Boards"])
+            for i in range(size):
+                if 'ID' not in json_object['Boards'][i]:
+                    generator = self.id_range_loop(json_object, i, "Boards")
+                    for j in generator:
+                        file.write(j)
+                else:
+                    file.write("{" + json_object['Boards'][i]["ID"] + ", \"")
+                    file.write(json_object["Boards"][i]['Name'] + "\"}")
+                    if i != (size-1):
+                        file.write(",\n  ")
+                    else:
+                        file.write("\n  ")
+            file.write("};\n")
+            file.write(QMAP_QUINT16_QSTRING_PARAMETERSDICT_PARAMETERS)
+            # dict loop
+            size = len(json_object["Parameters"])
+            for i in range(size):
+                if 'ID' not in json_object['Parameters'][i]:
+                    generator = self.id_range_loop(
+                        json_object, i, "Parameters")
+                    for j in generator:
+                        file.write(j)
+                else:
+                    file.write("{" + json_object['Parameters'][i]["ID"] + ", \"")
+                    file.write(json_object["Parameters"][i]['Name'] + '\"}')
+                    if i != size-1:
+                        file.write(",\n  ")
+                    else:
+                        file.write("\n  ")
+            file.write("};\n")

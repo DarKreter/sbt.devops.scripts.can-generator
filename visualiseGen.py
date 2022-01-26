@@ -31,14 +31,12 @@ class VGenerate:
             addresses.append(hex(curr_id))
             curr_id = curr_id + 1
         x = 0
+        dict_items = []
         for j in range(len(addresses)):
             x += 1
             body = "{" + f'{addresses[j]}, \"{json_object[rng][i]["Name"].replace("<x>", str(x))}\"' + "}"
-            if j != len(addresses):
-                body += ",\n  "
-            else:
-                body += "\n  "
-            yield body
+            dict_items.append(body)
+        return dict_items
 
     def write_to_file(self, json_object):
         with open(self.name, "w") as file:
@@ -49,8 +47,12 @@ class VGenerate:
             for i in range(size):
                 if 'ID' not in json_object['Boards'][i]:
                     generator = self.id_range_loop(json_object, i, "Boards")
+                    gen_size = len(generator)
                     for j in generator:
-                        file.write(j)
+                        if j == gen_size-1 and i == size-1:
+                            file.write(j + "\n  ")
+                        else:
+                            file.write(j + ",\n  ")
                 else:
                     file.write("{" + json_object['Boards'][i]["ID"] + ", \"")
                     file.write(json_object["Boards"][i]['Name'] + "\"}")
@@ -66,8 +68,12 @@ class VGenerate:
                 if 'ID' not in json_object['Parameters'][i]:
                     generator = self.id_range_loop(
                         json_object, i, "Parameters")
-                    for j in generator:
-                        file.write(j)
+                    gen_size = len(generator)
+                    for j in range(len(generator)):
+                        if j == gen_size-1 and i == size-1:
+                            file.write(generator[j] + "\n  ")
+                        else:
+                            file.write(generator[j] + ",\n  ")
                 else:
                     file.write("{" + json_object['Parameters'][i]["ID"] + ", \"")
                     file.write(json_object["Parameters"][i]['Name'] + '\"}')

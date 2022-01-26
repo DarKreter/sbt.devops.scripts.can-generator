@@ -1,5 +1,4 @@
 import argparse
-import jsonschema
 import json
 from checker_class import Checker
 from headerGen import HGenerate
@@ -9,6 +8,7 @@ parser.add_argument("json_file", type=str, help="input JSON filename with extens
 parser.add_argument("schema", type=str, help="input JSON filename with schema")
 parser.add_argument("header_name", type=str, help="input new file name")
 args = parser.parse_args()
+
 
 def convert_json_to_python(file1, file2):
     # Convert json to python object.
@@ -23,6 +23,6 @@ def convert_json_to_python(file1, file2):
 
 python_json, python_schema = convert_json_to_python(args.json_file, args.schema)
 check = Checker(python_json, python_schema, args.json_file)
-if(check.run_checks(check.json_object)):
+if check.run_checks(check.json_object):
     genFile = HGenerate(args.header_name)
     genFile.write_to_file(python_json)

@@ -18,18 +18,19 @@ class HGenerate:
     def __init__(self, name):
         self.name = name
 
-    def id_range_loop(self, json_object, i, rng):
+    @staticmethod
+    def id_range_loop(json_object, i, rng):
         max_id = int(json_object[rng][i]['MaxID'], 16)
         curr_id = int(json_object[rng][i]['MinID'], 16)
         adresses = []
-        while(max_id >= curr_id):
+        while max_id >= curr_id:
             adresses.append(hex(curr_id))
             curr_id = curr_id + 1
         x = 0
         for j in range(len(adresses)):
             x += 1
             help_str = str(x) + " = " + str(adresses[j]) + "\n  "
-            yield(json_object[rng][i]["Name"].replace("<x>", help_str))
+            yield json_object[rng][i]["Name"].replace("<x>", help_str)
 
     def write_to_file(self, json_object):
         with open(self.name, "w") as file:

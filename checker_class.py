@@ -1,5 +1,5 @@
 import jsonschema
-import json
+
 
 class Checker:
     json_object = {}
@@ -10,7 +10,8 @@ class Checker:
         self.json_schema = python_json_schema
         self.json_path = json_file_arg
 
-    def check_placeholder(self, m_json):
+    @staticmethod
+    def check_placeholder(m_json):
         for i in range(len(m_json['Parameters'])):
             if 'ID' not in m_json['Parameters'][i]:
                 if str(m_json['Parameters'][i]['Name']).find("<x>") != -1:
@@ -18,7 +19,8 @@ class Checker:
                 else:
                     print("error, placeholder")
 
-    def not_double_name(self, m_json):
+    @staticmethod
+    def not_double_name(m_json):
         name_board = []
         name_parameters = []
         for i in range(len(m_json["Boards"])):
@@ -37,61 +39,58 @@ class Checker:
                     print("parameters name error")
 
     # check weather MinID is smaller than MaxID
-    def compare_min_and_max(self, first, last):
+    @staticmethod
+    def compare_min_and_max(first, last):
         if int(first, 16) >> int(last, 16):
             print("Wrong MinID and MaxID input")
 
-    def compare_loop(self, my_json):
+    @staticmethod
+    def compare_loop(my_json):
         for j in range(len(my_json)):
             if 'ID' not in my_json['Parameters'][j]:
-                Checker.compare_min_and_max(self, my_json['Parameters'][j]['MinID'], my_json['Parameters'][j]["MaxID"])
+                Checker.compare_min_and_max(my_json['Parameters'][j]['MinID'], my_json['Parameters'][j]["MaxID"])
 
-    def id_range_loop(self, json_object, i, rng):
+    @staticmethod
+    def id_range_loop(json_object, i, rng):
         max_id = int(json_object[rng][i]['MaxID'], 16)
         curr_id = int(json_object[rng][i]['MinID'], 16)
-        adresses = []
-        while(max_id >= curr_id):
-            adresses.append(hex(curr_id))
+        addresses = []
+        while max_id >= curr_id:
+            addresses.append(hex(curr_id))
             curr_id = curr_id + 1
-        for j in range(len(adresses)):
-            yield(adresses[j])
+        for j in range(len(addresses)):
+            yield addresses[j]
 
-    def unique_table_loop(self, table):
+    @staticmethod
+    def unique_table_loop(table):
         for elem in table:
             if table.count(elem) > 1:
                 return True
             return False
 
-    def check_for_adress_colision(self, json_object):
-        table_of_adresses = []
+    @staticmethod
+    def check_for_address_collision(self, json_object):
+        table_of_addresses = []
         for i in range(len(json_object["Boards"])):
             if 'ID' not in json_object['Boards'][i]:
                 generator = self.id_range_loop(json_object, i, "Boards")
                 for j in generator:
-                    table_of_adresses.append(j)
+                    table_of_addresses.append(j)
             else:
-                table_of_adresses.append(hex(int(json_object["Boards"][i]['ID'], 16)))
+                table_of_addresses.append(hex(int(json_object["Boards"][i]['ID'], 16)))
         for i in range(len(json_object["Parameters"])):
             if 'ID' not in json_object['Parameters'][i]:
                 generator = self.id_range_loop(json_object, i, "Parameters")
                 for j in generator:
-                    table_of_adresses.append(j)
+                    table_of_addresses.append(j)
             else:
-                table_of_adresses.append(hex(int(json_object["Parameters"][i]['ID'], 16)))
-        # table_of_adresses.sort()
-        # print(table_of_adresses)
-        if len(table_of_adresses) == len(set(table_of_adresses)):
+                table_of_addresses.append(hex(int(json_object["Parameters"][i]['ID'], 16)))
+        if len(table_of_addresses) == len(set(table_of_addresses)):
             print("are unique")
         else:
             print("not unique")
-        # if(Checker.unique_table_loop(self, table_of_adresses)):
-        #    print("There are duplicates")
-        # else:
-        #    print("There are no duplicates")
 
-
-
-#    errors
+    # errors
     def validate(self, json_object, json_schema):
         try:
             jsonschema.validate(instance=json_object, schema=json_schema)
@@ -101,7 +100,7 @@ class Checker:
             lookup = str(ex.instance)
             if lookup[0] == '{':
                 lookup = lookup[1:lookup.find(',')]
-                lookup = lookup.replace('\'','\"')
+                lookup = lookup.replace('\'', '\"')
             with open(self.json_path) as myFile:
                 for (num, line) in enumerate(myFile, 1):
                     if lookup in line:
@@ -109,12 +108,11 @@ class Checker:
             return 0
 
     def run_checks(self, ob):
-        if(Checker.validate(self, self.json_object, self.json_schema)):
-            Checker.check_placeholder(self, ob)
-            Checker.not_double_name(self, ob)
-            Checker.compare_loop(self, ob)
-            Checker.check_for_adress_colision(self, self.json_object)
+        if Checker.validate(self, self.json_object, self.json_schema):
+            Checker.check_placeholder(ob)
+            Checker.not_double_name(ob)
+            Checker.compare_loop(ob)
+            Checker.check_for_address_collision(self, self.json_object)
             return 1
         else:
             return 0
-            

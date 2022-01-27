@@ -31,3 +31,6 @@ if check.run_checks(check.json_object):
     if args.visual_name is not None:
         visual = VGenerate(args.visual_name)
         visual.write_to_file(python_json)
+    exit(0)
+else:
+    exit(1)

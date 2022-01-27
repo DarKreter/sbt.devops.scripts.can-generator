@@ -110,8 +110,8 @@ class Checker:
             Checker.not_double_name(ob)
             Checker.compare_loop(ob)
             if Checker.check_for_address_collision(self, self.json_object):
-                return 0
+                return 1
             else:
-                return -1
+                return 0
         else:
-            return -1
+            return 0

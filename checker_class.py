@@ -62,33 +62,30 @@ class Checker:
             yield addresses[j]
 
     @staticmethod
-    def unique_table_loop(table):
-        for elem in table:
-            if table.count(elem) > 1:
-                return True
-            return False
-
-    @staticmethod
     def check_for_address_collision(self, json_object):
-        table_of_addresses = []
+        table_of_addresses_boards = []
+        table_of_addresses_parameters = []
         for i in range(len(json_object["Boards"])):
             if 'ID' not in json_object['Boards'][i]:
                 generator = self.id_range_loop(json_object, i, "Boards")
                 for j in generator:
-                    table_of_addresses.append(j)
+                    table_of_addresses_boards.append(j)
             else:
                 table_of_addresses.append(hex(int(json_object["Boards"][i]['ID'], 16)))
         for i in range(len(json_object["Parameters"])):
             if 'ID' not in json_object['Parameters'][i]:
                 generator = self.id_range_loop(json_object, i, "Parameters")
                 for j in generator:
-                    table_of_addresses.append(j)
+                    table_of_addresses_parameters.append(j)
             else:
                 table_of_addresses.append(hex(int(json_object["Parameters"][i]['ID'], 16)))
-        if len(table_of_addresses) == len(set(table_of_addresses)):
-            print("are unique")
+        if len(table_of_addresses_boards) == len(set(table_of_addresses_boards)):
+            if len(table_of_addresses_parameters) == len(set(table_of_addresses_parameters)):
+                return 1
+            else:
+                return 0
         else:
-            print("not unique")
+            return 0
 
     # errors
     def validate(self, json_object, json_schema):
@@ -112,7 +109,9 @@ class Checker:
             Checker.check_placeholder(ob)
             Checker.not_double_name(ob)
             Checker.compare_loop(ob)
-            Checker.check_for_address_collision(self, self.json_object)
-            return 1
+            if Checker.check_for_address_collision(self, self.json_object):
+                return 0
+            else:
+                return -1
         else:
-            return 0
+            return -1

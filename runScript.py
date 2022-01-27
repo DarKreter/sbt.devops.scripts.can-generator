@@ -5,12 +5,11 @@ from headerGen import HGenerate
 from visualiseGen import VGenerate
 
 parser = argparse.ArgumentParser()
-parser.add_argument("json_file", type=str, help="input JSON filename with extension")
-parser.add_argument("schema", type=str, help="input JSON filename with schema")
-parser.add_argument("header_name", type=str, help="input new file name")
-parser.add_argument("visual_name", type=str, help="input new file name")
+parser.add_argument("--json_file", type=str, help="input JSON filename with extension")
+parser.add_argument("--schema", type=str, help="input JSON filename with schema")
+parser.add_argument("--header_name", type=str, help="input new file name", required=False)
+parser.add_argument("--visual_name", type=str, help="input new file name", required=False)
 args = parser.parse_args()
-
 
 def convert_json_to_python(file1, file2):
     # Convert json to python object.
@@ -26,7 +25,9 @@ def convert_json_to_python(file1, file2):
 python_json, python_schema = convert_json_to_python(args.json_file, args.schema)
 check = Checker(python_json, python_schema, args.json_file)
 if check.run_checks(check.json_object):
-    genFile = HGenerate(args.header_name)
-    genFile.write_to_file(python_json)
-    visual = VGenerate(args.visual_name)
-    visual.write_to_file(python_json)
+    if args.header_name is not None:
+        genFile = HGenerate(args.header_name)
+        genFile.write_to_file(python_json)
+    if args.visual_name is not None:
+        visual = VGenerate(args.visual_name)
+        visual.write_to_file(python_json)

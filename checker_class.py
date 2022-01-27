@@ -71,14 +71,14 @@ class Checker:
                 for j in generator:
                     table_of_addresses_boards.append(j)
             else:
-                table_of_addresses.append(hex(int(json_object["Boards"][i]['ID'], 16)))
+                table_of_addresses_boards.append(hex(int(json_object["Boards"][i]['ID'], 16)))
         for i in range(len(json_object["Parameters"])):
             if 'ID' not in json_object['Parameters'][i]:
                 generator = self.id_range_loop(json_object, i, "Parameters")
                 for j in generator:
                     table_of_addresses_parameters.append(j)
             else:
-                table_of_addresses.append(hex(int(json_object["Parameters"][i]['ID'], 16)))
+                table_of_addresses_parameters.append(hex(int(json_object["Parameters"][i]['ID'], 16)))
         if len(table_of_addresses_boards) == len(set(table_of_addresses_boards)):
             if len(table_of_addresses_parameters) == len(set(table_of_addresses_parameters)):
                 return 1

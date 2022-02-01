@@ -27,10 +27,12 @@ class HGenerate:
             adresses.append(hex(curr_id))
             curr_id = curr_id + 1
         x = 0
+        dict_address = []
         for j in range(len(adresses)):
             x += 1
-            help_str = str(x) + " = " + str(adresses[j]) + "\n  "
-            yield json_object[rng][i]["Name"].replace("<x>", help_str)
+            help_str = str(x) + " = " + str(adresses[j])
+            dict_address.append(json_object[rng][i]["Name"].replace("<x>", help_str))
+        return dict_address
 
     def write_to_file(self, json_object):
         with open(self.name, "w") as file:
@@ -41,24 +43,42 @@ class HGenerate:
             file.write(NAMESPACE_BEGIN_STRING)
             file.write(ENUM_CLASS_CAN_BOARD_ID_BEGIN)
             # for loop
+            size = len(json_object["Boards"])
             for i in range(len(json_object["Boards"])):
                 if 'ID' not in json_object['Boards'][i]:
                     generator = self.id_range_loop(json_object, i, "Boards")
+                    gener_size = len(generator)
                     for j in generator:
-                        file.write(j)
+                        if j == gener_size-1 and i == size-1:
+                            file.write(j + "\n  ")
+                        else:
+                            file.write(j + ",\n  ")
                 else:
                     file.write(json_object['Boards'][i]["Name"] + " = ")
-                    file.write(json_object["Boards"][i]['ID'] + '\n  ')
+                    file.write(json_object["Boards"][i]['ID'])
+                    if i != size-1:
+                        file.write(",\n  ")
+                    else:
+                        file.write("\n  ")
             file.write(ENUM_CLASS_CAN_BOARD_ID_END)
             file.write(ENUM_CLASS_CAN_PARAMETERS_ID_BEGIN)
+            size = len(json_object["Parameters"])
             for i in range(len(json_object["Parameters"])):
                 if 'ID' not in json_object['Parameters'][i]:
                     generator = self.id_range_loop(
                         json_object, i, "Parameters")
+                    gener_size = len(generator)
                     for j in generator:
-                        file.write(j)
+                        if j == gener_size-1 and i == size-1:
+                            file.write(j + "\n  ")
+                        else:
+                            file.write(j + ",\n  ")
                 else:
                     file.write(json_object['Parameters'][i]["Name"] + " = ")
-                    file.write(json_object["Parameters"][i]['ID'] + '\n  ')
+                    file.write(json_object["Parameters"][i]['ID'])
+                    if i != size-1:
+                        file.write(",\n  ")
+                    else:
+                        file.write("\n  ")
             file.write(ENUM_CLASS_CAN_PARAMETERS_ID_END)
             file.write(NAMESPACE_END_STRING)

@@ -75,16 +75,16 @@ class HGenerate:
             self.write(file, WARNING_AND_FILE_DESCRIPTION, 2)
             self.write(file, CAN_ID_NAMESPACE_BEGIN_STRING, 2)
             
-            ID_types = [("SourceIDs", ENUM_CLASS_CAN_SOURCE_ID_BEGIN), 
-                        ("ParamIDs", ENUM_CLASS_CAN_PARAM_ID_BEGIN),
-                        ("GroupIDs", ENUM_CLASS_CAN_GROUP_ID_BEGIN),]
+            ID_types = [("SourceIDs", ENUM_CLASS_CAN_SOURCE_ID_BEGIN, 2), 
+                        ("ParamIDs", ENUM_CLASS_CAN_PARAM_ID_BEGIN, 3),
+                        ("GroupIDs", ENUM_CLASS_CAN_GROUP_ID_BEGIN, 2),]
             
-            for (ID_type, ENUM_CLASS_BEGIN) in ID_types:
+            for (ID_type, ENUM_CLASS_BEGIN, hexLength) in ID_types:
                 self.write(file, ENUM_CLASS_BEGIN, 1)
                 # for loop
                 for i in range(len(json_object[ID_type])):
                     if 'ID' not in json_object[ID_type][i]:
-                        generator = self.id_range_loop(json_object, i, ID_type, 2)
+                        generator = self.id_range_loop(json_object, i, ID_type, hexLength)
 
                         for j in range(len(generator)):
                                 self.write(file, "\t{},".format(generator[j]), 1)

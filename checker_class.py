@@ -52,6 +52,9 @@ class Checker:
         if int(first, 16) >= int(last, 16):
             print("Wrong MinID and MaxID in {}\n".format(name))
             raise
+        if int(first, 16) == 0:
+            print("ID of {} can't be equal to 0.\n".format(name))
+            raise
 
     @staticmethod
     def check_if_group_is_valid(my_json, object):
@@ -74,13 +77,17 @@ class Checker:
 
     @staticmethod
     def compare_loop(my_json):
-        for j in range(len(my_json['ParamIDs'])):
-            if 'ID' not in my_json['ParamIDs'][j]:
-                Checker.compare_min_and_max(my_json['ParamIDs'][j]['MinID'], my_json['ParamIDs'][j]["MaxID"], my_json['ParamIDs'][j]["Name"])
-        for j in range(len(my_json['SourceIDs'])):
-            if 'ID' not in my_json['SourceIDs'][j]:
-                Checker.compare_min_and_max(my_json['SourceIDs'][j]['MinID'], my_json['SourceIDs'][j]["MaxID"], my_json['SourceIDs'][j]["Name"])
-
+        SubID_Types = ['SourceIDs', 'ParamIDs', 'GroupIDs']
+        for subID_type in SubID_Types:
+            for j in range(len(my_json[subID_type])):
+                if 'ID' not in my_json[subID_type][j]:
+                    Checker.compare_min_and_max(my_json[subID_type][j]['MinID'], my_json[subID_type][j]["MaxID"], my_json[subID_type][j]["Name"])
+                else:
+                    if int(my_json[subID_type][j]['ID'], 16) == 0:
+                        print("ID of {} can't be equal to 0.\n".format(my_json[subID_type][j]["Name"]))
+                        raise
+           
+           
     @staticmethod
     def id_range_loop(json_object, i, rng):
         max_id = int(json_object[rng][i]['MaxID'], 16)
@@ -94,29 +101,31 @@ class Checker:
 
     @staticmethod
     def check_for_address_collision(self, json_object):
-        table_of_addresses_boards = []
-        table_of_addresses_parameters = []
+        table_of_addresses_sources = []
+        table_of_addresses_params = []
         for i in range(len(json_object["SourceIDs"])):
             if 'ID' not in json_object['SourceIDs'][i]:
                 generator = self.id_range_loop(json_object, i, "SourceIDs")
                 for j in generator:
-                    table_of_addresses_boards.append(j)
+                    table_of_addresses_sources.append(j)
             else:
-                table_of_addresses_boards.append(hex(int(json_object["SourceIDs"][i]['ID'], 16)))
+                table_of_addresses_sources.append(hex(int(json_object["SourceIDs"][i]['ID'], 16)))
         for i in range(len(json_object["ParamIDs"])):
             if 'ID' not in json_object['ParamIDs'][i]:
                 generator = self.id_range_loop(json_object, i, "ParamIDs")
                 for j in generator:
-                    table_of_addresses_parameters.append(j)
+                    table_of_addresses_params.append(j)
             else:
-                table_of_addresses_parameters.append(hex(int(json_object["ParamIDs"][i]['ID'], 16)))
-        if len(table_of_addresses_boards) == len(set(table_of_addresses_boards)):
-            if len(table_of_addresses_parameters) == len(set(table_of_addresses_parameters)):
-                return 1
+                table_of_addresses_params.append(hex(int(json_object["ParamIDs"][i]['ID'], 16)))
+        if len(table_of_addresses_sources) == len(set(table_of_addresses_sources)):
+            if len(table_of_addresses_params) == len(set(table_of_addresses_params)):
+                return
             else:
-                return 0
+                print("There is address collision in ParamIDs.\n")
+                raise
         else:
-            return 0
+            print("There is address collision in SourceIDs.\n")
+            raise
 
     # errors
     def validate(self, json_object, json_schema):
@@ -142,9 +151,7 @@ class Checker:
             Checker.not_double_name(ob)
             Checker.compare_loop(ob)
             Checker.check_if_all_groups_are_valid(ob)
-            if Checker.check_for_address_collision(self, self.json_object):
-                return 1
-            else:
-                return 0
+            Checker.check_for_address_collision(self, self.json_object)
+            return 1
         else:
             return 0

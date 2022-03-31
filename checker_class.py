@@ -76,6 +76,54 @@ class Checker:
 
 
     @staticmethod
+    def compare_params_with_dbc(my_json):
+        jsonParamIDs = []
+        for object in my_json['ParamIDs']:
+            if "ID" in object:
+                jsonParamIDs.append(object["Name"])
+            else:
+                max_id = int(object['MaxID'], 16)
+                curr_id = int(object['MinID'], 16)
+                adresses = []
+                while max_id >= curr_id:
+                    adresses.append(hex(curr_id))
+                    curr_id = curr_id + 1
+                x = 0
+                for j in range(len(adresses)):
+                    x += 1
+                    jsonParamIDs.append(object["Name"].replace("<x>", str(x)))              
+                
+        # Using readlines() 
+        dbc = open('../miscellaneous.can-ids/SBT.dbc', 'r')
+        Lines = dbc.readlines()
+        
+        dbcParamIDs = []
+        # Strips the newline character
+        for line in Lines:
+            if line.find("BO_") != -1:
+                x = line.split()[2][:-1]
+                dbcParamIDs.append(x)        
+        
+        if len(dbcParamIDs) != len(jsonParamIDs):
+            print("List of ParamIDs is not equal to list of DBC frames names\n")
+            raise
+        
+        jsonParamIDs.sort()
+        dbcParamIDs.sort()
+        
+        # for j in jsonParamIDs:
+        #     print(j)
+            
+        # for k in dbcParamIDs:
+        #     print(k)
+            
+        for i in range(len(jsonParamIDs)):
+            if jsonParamIDs[i] != dbcParamIDs[i]:
+                print("List of ParamIDs is not equal to list of DBC frames names\n")
+                raise
+
+
+    @staticmethod
     def compare_loop(my_json):
         SubID_Types = ['SourceIDs', 'ParamIDs', 'GroupIDs']
         for subID_type in SubID_Types:
@@ -151,6 +199,7 @@ class Checker:
             Checker.not_double_name(ob)
             Checker.compare_loop(ob)
             Checker.check_if_all_groups_are_valid(ob)
+            Checker.compare_params_with_dbc(ob)
             Checker.check_for_address_collision(self, self.json_object)
             return 1
         else:

@@ -26,12 +26,12 @@ python_json, python_schema = convert_json_to_python(args.json_file, args.schema)
 
 check = Checker(python_json, python_schema, args.json_file)
 if check.run_checks(check.json_object):
-    # if args.header_name is not None:
-    #     genFile = HGenerate(args.header_name)
-    #     genFile.write_to_file(python_json)
-    # if args.visual_name is not None:
-    #     visual = VGenerate(args.visual_name)
-    #     visual.write_to_file(python_json)
+    if args.header_name is not None:
+        genFile = HGenerate(args.header_name)
+        genFile.write_to_file(python_json)
+    if args.visual_name is not None:
+        visual = VGenerate(args.visual_name)
+        visual.write_to_file(python_json)
     exit(0)
 else:
     exit(1)

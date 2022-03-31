@@ -1,64 +1,57 @@
 {
-    "Boards": [
+    "SourceIDs": [
         {
-            "ID": "0x100001",
-            "Name": "PiBox"
+            "MinID": "0x03",
+            "MaxID": "0x02",
+            "Name": "MPPT_CONTROLLER_<x>"
         },
         {
-            "ID": "0x10001",
-            "Name": "PiBox2"
+            "MinID": "0x03",
+            "MaxID": "0x04",
+            "Name": "LIFEPO4_CONTROLLER_<x>"
         },
         {
-            "ID": "0x0002",
-            "Name": "Steering wheel"
+            "MinID": "0x05",
+            "MaxID": "0x08",
+            "Name": "MPPT_<x>"
         },
         {
-            "ID": "0x0010",
-            "Name": "Battery 1"
-        },
-        {
-            "ID": "0x0011",
-            "Name": "Battery 2"
+            "MinID": "0x09",
+            "MaxID": "0x0C",
+            "Name": "LIFEPO4_<x>"
         }
     ],
-    "Parameters": [
+    "ParamIDs": [
         {
-            "ID": "0x0001",
-            "Name": "Heartbeat", 
-            "Type": "uint32"
+            "ID": "0x001",
+            "Name": "HEARTBEAT", 
+            "Group": "DEFAULT",
+            "Priority": "0"
         },
         {
-            "MinID": "0x0012",
-            "MaxID": "0x004F",
-            "Name": "Binary channel <x>", 
-            "Type": "bool"
+            "ID": "0x002",
+            "Name": "LIFEPO4_GENERAL",
+            "Group": "LIFEPO4_DATA",
+            "Priority": "7"
         },
         {
-            "MinID": "0x0050",
-            "MaxID": "0x008F",
-            "Name": "Voltage channel <x>",
-            "Type": "float"
+            "MinID": "0x003",
+            "MaxID": "0x005",
+            "Name": "LIFEPO4_CELLS_<x>",
+            "Group": "LIFEPO4_DATA",
+            "Priority": "7"
         },
         {
-            "MinID": "0x0090",
-            "MaxID": "0x00CF",
-            "Name": "Current channel <x>", 
-            "Type": "float"
-        },
+            "ID": "0x006",
+            "Name": "MPPT_GENERAL",
+            "Group": "DEFAULT",
+            "Priority": "7"
+        }
+    ],
+    "GroupIDs": [
         {
-            "ID": "0x10011",
-            "Name": "Latitude",
-            "Type": "float"
-        },
-        {
-            "ID": "0x0101",
-            "Name": "Longitude",
-            "Type": "float"
-        },
-        {
-            "ID": "0x0102",
-            "Name": "Altitude",
-            "Type": "float"
+            "ID": "0x1",
+            "Name": "LIFEPO4_DATA"
         }
     ]
 }

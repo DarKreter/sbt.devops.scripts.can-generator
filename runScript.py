@@ -34,5 +34,4 @@ if check.run_checks(check.json_object):
     #     visual.write_to_file(python_json)
     exit(0)
 else:
-    print("not working")
     exit(1)

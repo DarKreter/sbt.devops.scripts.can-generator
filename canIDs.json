@@ -1,7 +1,7 @@
 {
     "SourceIDs": [
         {
-            "MinID": "0x03",
+            "MinID": "0x01",
             "MaxID": "0x02",
             "Name": "MPPT_CONTROLLER_<x>"
         },

@@ -17,14 +17,16 @@ class Checker:
                 if str(m_json['ParamIDs'][i]['Name']).find("<x>") != -1:
                     continue
                 else:
-                    print("error, placeholder")
+                    print("Couldn't find placeholder (<x>) in ID {} with defined MinID and MaxID.\n".format(str(m_json['ParamIDs'][i]['Name'])))
+                    raise
                     
         for i in range(len(m_json['SourceIDs'])):
             if 'ID' not in m_json['SourceIDs'][i]:
                 if str(m_json['SourceIDs'][i]['Name']).find("<x>") != -1:
                     continue
                 else:
-                    print("error, placeholder")
+                    print("Couldn't find placeholder (<x>) in ID {} with defined MinID and MaxID.\n".format(str(m_json['SourceIDs'][i]['Name'])))
+                    raise
 
     @staticmethod
     def not_double_name(m_json):
@@ -40,23 +42,26 @@ class Checker:
             for i in range(len(names)):
                 if i < len(names) - 1:
                     if names[i] == names[i + 1]:
-                        print(IDtype + "name error")
+                        print("Name {} in {} occurs more than once.\n".format(names[i], IDtype))
+                        raise
             names.clear()
 
     # check weather MinID is smaller than MaxID
     @staticmethod
-    def compare_min_and_max(first, last):
-        if int(first, 16) >> int(last, 16):
-            print("Wrong MinID and MaxID input")
+    def compare_min_and_max(first, last, name):
+        if int(first, 16) >= int(last, 16):
+            print("Wrong MinID and MaxID in {}\n".format(name))
+            raise
+
 
     @staticmethod
     def compare_loop(my_json):
-        for j in range(len(my_json)):
+        for j in range(len(my_json['ParamIDs'])):
             if 'ID' not in my_json['ParamIDs'][j]:
-                Checker.compare_min_and_max(my_json['ParamIDs'][j]['MinID'], my_json['ParamIDs'][j]["MaxID"])
-        for j in range(len(my_json)):
+                Checker.compare_min_and_max(my_json['ParamIDs'][j]['MinID'], my_json['ParamIDs'][j]["MaxID"], my_json['ParamIDs'][j]["Name"])
+        for j in range(len(my_json['SourceIDs'])):
             if 'ID' not in my_json['SourceIDs'][j]:
-                Checker.compare_min_and_max(my_json['SourceIDs'][j]['MinID'], my_json['SourceIDs'][j]["MaxID"])
+                Checker.compare_min_and_max(my_json['SourceIDs'][j]['MinID'], my_json['SourceIDs'][j]["MaxID"], my_json['SourceIDs'][j]["Name"])
 
     @staticmethod
     def id_range_loop(json_object, i, rng):
@@ -110,6 +115,7 @@ class Checker:
                 for (num, line) in enumerate(myFile, 1):
                     if lookup in line:
                         print('found at line:', num)
+                        raise
             return 0
 
     def run_checks(self, ob):

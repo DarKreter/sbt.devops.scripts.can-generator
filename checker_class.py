@@ -12,31 +12,36 @@ class Checker:
 
     @staticmethod
     def check_placeholder(m_json):
-        for i in range(len(m_json['Parameters'])):
-            if 'ID' not in m_json['Parameters'][i]:
-                if str(m_json['Parameters'][i]['Name']).find("<x>") != -1:
+        for i in range(len(m_json['ParamIDs'])):
+            if 'ID' not in m_json['ParamIDs'][i]:
+                if str(m_json['ParamIDs'][i]['Name']).find("<x>") != -1:
+                    continue
+                else:
+                    print("error, placeholder")
+                    
+        for i in range(len(m_json['SourceIDs'])):
+            if 'ID' not in m_json['SourceIDs'][i]:
+                if str(m_json['SourceIDs'][i]['Name']).find("<x>") != -1:
                     continue
                 else:
                     print("error, placeholder")
 
     @staticmethod
     def not_double_name(m_json):
-        name_board = []
-        name_parameters = []
-        for i in range(len(m_json["Boards"])):
-            name_board.append(m_json["Boards"][i]["Name"])
-        for i in range(len(m_json["Parameters"])):
-            name_parameters.append(m_json["Parameters"][i]["Name"])
-        name_board.sort()
-        name_parameters.sort()
-        for i in range(len(name_board)):
-            if i < len(name_board) - 1:
-                if name_board[i] == name_board[i + 1]:
-                    print("boards name error")
-        for i in range(len(name_parameters)):
-            if i < len(name_parameters) - 1:
-                if name_parameters[i] == name_parameters[i + 1]:
-                    print("parameters name error")
+        SubID_Types = ['SourceIDs', 'ParamIDs', 'GroupIDs']
+        names = []
+        
+        for IDtype in SubID_Types:
+            for singleID in m_json[IDtype]:
+                names.append(singleID["Name"])
+
+            names.sort()
+
+            for i in range(len(names)):
+                if i < len(names) - 1:
+                    if names[i] == names[i + 1]:
+                        print(IDtype + "name error")
+            names.clear()
 
     # check weather MinID is smaller than MaxID
     @staticmethod
@@ -47,8 +52,11 @@ class Checker:
     @staticmethod
     def compare_loop(my_json):
         for j in range(len(my_json)):
-            if 'ID' not in my_json['Parameters'][j]:
-                Checker.compare_min_and_max(my_json['Parameters'][j]['MinID'], my_json['Parameters'][j]["MaxID"])
+            if 'ID' not in my_json['ParamIDs'][j]:
+                Checker.compare_min_and_max(my_json['ParamIDs'][j]['MinID'], my_json['ParamIDs'][j]["MaxID"])
+        for j in range(len(my_json)):
+            if 'ID' not in my_json['SourceIDs'][j]:
+                Checker.compare_min_and_max(my_json['SourceIDs'][j]['MinID'], my_json['SourceIDs'][j]["MaxID"])
 
     @staticmethod
     def id_range_loop(json_object, i, rng):
@@ -58,27 +66,27 @@ class Checker:
         while max_id >= curr_id:
             addresses.append(hex(curr_id))
             curr_id = curr_id + 1
-        for j in range(len(addresses)):
-            yield addresses[j]
+        for address in addresses:
+            yield address
 
     @staticmethod
     def check_for_address_collision(self, json_object):
         table_of_addresses_boards = []
         table_of_addresses_parameters = []
-        for i in range(len(json_object["Boards"])):
-            if 'ID' not in json_object['Boards'][i]:
-                generator = self.id_range_loop(json_object, i, "Boards")
+        for i in range(len(json_object["SourceIDs"])):
+            if 'ID' not in json_object['SourceIDs'][i]:
+                generator = self.id_range_loop(json_object, i, "SourceIDs")
                 for j in generator:
                     table_of_addresses_boards.append(j)
             else:
-                table_of_addresses_boards.append(hex(int(json_object["Boards"][i]['ID'], 16)))
-        for i in range(len(json_object["Parameters"])):
-            if 'ID' not in json_object['Parameters'][i]:
-                generator = self.id_range_loop(json_object, i, "Parameters")
+                table_of_addresses_boards.append(hex(int(json_object["SourceIDs"][i]['ID'], 16)))
+        for i in range(len(json_object["ParamIDs"])):
+            if 'ID' not in json_object['ParamIDs'][i]:
+                generator = self.id_range_loop(json_object, i, "ParamIDs")
                 for j in generator:
                     table_of_addresses_parameters.append(j)
             else:
-                table_of_addresses_parameters.append(hex(int(json_object["Parameters"][i]['ID'], 16)))
+                table_of_addresses_parameters.append(hex(int(json_object["ParamIDs"][i]['ID'], 16)))
         if len(table_of_addresses_boards) == len(set(table_of_addresses_boards)):
             if len(table_of_addresses_parameters) == len(set(table_of_addresses_parameters)):
                 return 1

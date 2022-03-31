@@ -1,6 +1,6 @@
 to run script you need to type:
 
-on linux: ```python3 runScript.py --json_file canIDs.json --schema canIDsSchema.json --header_file text1.txt --visual_file text2.txt```
+on linux: ```python3 runScript.py --json_file canIDs.json --schema canIDsSchema.json --header_name text1.txt --visual_name text2.txt```
 
 where `text1.txt` is the output headder file name
 

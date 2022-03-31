@@ -76,7 +76,7 @@ class Checker:
 
 
     @staticmethod
-    def compare_params_with_dbc(my_json):
+    def compare_params_with_dbc(my_json, dbc_path):
         jsonParamIDs = []
         for object in my_json['ParamIDs']:
             if "ID" in object:
@@ -94,7 +94,7 @@ class Checker:
                     jsonParamIDs.append(object["Name"].replace("<x>", str(x)))              
                 
         # Using readlines() 
-        dbc = open('../miscellaneous.can-ids/SBT.dbc', 'r')
+        dbc = open(dbc_path, 'r')
         Lines = dbc.readlines()
         
         dbcParamIDs = []
@@ -105,7 +105,7 @@ class Checker:
                 dbcParamIDs.append(x)        
         
         if len(dbcParamIDs) != len(jsonParamIDs):
-            print("List of ParamIDs is not equal to list of DBC frames names\n")
+            print("List of ParamIDs is not equal to list of DBC frame names\n")
             raise
         
         jsonParamIDs.sort()
@@ -119,7 +119,7 @@ class Checker:
             
         for i in range(len(jsonParamIDs)):
             if jsonParamIDs[i] != dbcParamIDs[i]:
-                print("List of ParamIDs is not equal to list of DBC frames names\n")
+                print("List of ParamIDs is not equal to list of DBC frame names\n")
                 raise
 
 
@@ -193,13 +193,13 @@ class Checker:
                         raise
             return 0
 
-    def run_checks(self, ob):
+    def run_checks(self, ob, dbc_path):
         if Checker.validate(self, self.json_object, self.json_schema):
             Checker.check_placeholder(ob)
             Checker.not_double_name(ob)
             Checker.compare_loop(ob)
             Checker.check_if_all_groups_are_valid(ob)
-            Checker.compare_params_with_dbc(ob)
+            Checker.compare_params_with_dbc(ob, dbc_path)
             Checker.check_for_address_collision(self, self.json_object)
             return 1
         else:

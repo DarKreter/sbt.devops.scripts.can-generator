@@ -53,6 +53,24 @@ class Checker:
             print("Wrong MinID and MaxID in {}\n".format(name))
             raise
 
+    @staticmethod
+    def check_if_group_is_valid(my_json, object):
+        if object["Group"] == "DEFAULT":
+            return
+            
+        for groups in my_json['GroupIDs']:
+            if groups["Name"] == object["Group"]:
+                return
+            
+        print("{} group in ParamID {} doesn't exist in GroupIDs.\n".format(object["Group"], object["Name"]))
+        raise
+
+
+    @staticmethod
+    def check_if_all_groups_are_valid(my_json):
+        for object in my_json['ParamIDs']:
+            Checker.check_if_group_is_valid(my_json, object)
+
 
     @staticmethod
     def compare_loop(my_json):
@@ -123,6 +141,7 @@ class Checker:
             Checker.check_placeholder(ob)
             Checker.not_double_name(ob)
             Checker.compare_loop(ob)
+            Checker.check_if_all_groups_are_valid(ob)
             if Checker.check_for_address_collision(self, self.json_object):
                 return 1
             else:

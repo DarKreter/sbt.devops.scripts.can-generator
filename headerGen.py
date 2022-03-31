@@ -8,17 +8,23 @@ WARNING_AND_FILE_DESCRIPTION = "/**\
  *\n\
  * @brief In this file are Source, Param, Group, Message ID definitions.\n\
  */"
-NAMESPACE_BEGIN_STRING = "namespace SBT::System::Comm::CAN_ID {"
-NAMESPACE_END_STRING = "} // namespace SBT::System::Comm::CAN_ID"
+CAN_ID_NAMESPACE_BEGIN_STRING = "namespace SBT::System::Comm::CAN_ID {"
+CAN_ID_NAMESPACE_END_STRING = "} // namespace SBT::System::Comm::CAN_ID"
 
-ENUM_CLASS_CAN_BOARD_ID_BEGIN = "enum class Source : uint8_t {\n\
+MESSAGE_NAMESPACE_BEGIN_STRING = "namespace Message {"
+MESSAGE_NAMESPACE_END_STRING = "} // namespace Message"
+
+ENUM_CLASS_CAN_SOURCE_ID_BEGIN = "enum class Source : uint8_t {\n\
 \tDEFAULT = 0x00,"
-ENUM_CLASS_CAN_BOARD_ID_END = "} // enum Source"
-
-ENUM_CLASS_CAN_PARAMETERS_ID_BEGIN = "enum class Param : uint16_t {\n\
+ENUM_CLASS_CAN_PARAM_ID_BEGIN = "enum class Param : uint16_t {\n\
+\tDEFAULT = 0x000,"
+ENUM_CLASS_CAN_GROUP_ID_BEGIN = "enum class Group : uint8_t {\n\
 \tDEFAULT = 0x00,"
-ENUM_CLASS_CAN_PARAMETERS_ID_END = "} // enum Param"
-
+MESSAGE_t_STRUCT_DEFINITION = "struct Message_t {\n\
+\tuint8_t priority;\n\
+\tParam paramID;\n\
+\tGroup group;\n\
+};"
 
 class HGenerate:
 
@@ -26,7 +32,7 @@ class HGenerate:
         self.name = name
 
     @staticmethod
-    def id_range_loop(json_object, i, rng):
+    def id_range_loop(json_object, i, rng, hexSize):
         max_id = int(json_object[rng][i]['MaxID'], 16)
         curr_id = int(json_object[rng][i]['MinID'], 16)
         adresses = []
@@ -37,9 +43,25 @@ class HGenerate:
         dict_address = []
         for j in range(len(adresses)):
             x += 1
-            help_str = "{} = {}".format(x, "0x{0:0{1}X}".format(int(adresses[j], 16), 2))
+            help_str = "{} = {}".format(x, "0x{0:0{1}X}".format(int(adresses[j], 16), hexSize))
             dict_address.append(json_object[rng][i]["Name"].replace("<x>", help_str))
         return dict_address
+
+    @staticmethod
+    def explode_IDs_into_mess_var(json_object, param):
+        max_id = int(param['MaxID'], 16)
+        curr_id = int(param['MinID'], 16)
+        adresses = []
+        while max_id >= curr_id:
+            adresses.append(hex(curr_id))
+            curr_id = curr_id + 1
+        x = 0
+        dict_address = []
+        for j in range(len(adresses)):
+            x += 1
+            dict_address.append(param["Name"].replace("<x>", str(x)))
+        return dict_address
+    
 
     def write(self, file, text, newLinesQuantity):
         file.write(text)
@@ -51,51 +73,46 @@ class HGenerate:
             self.write(file, DEFINE_STRING.format(self.name[0:self.name.index('.')]), 2)
             self.write(file, INCLUDE_STRING_LIB, 2)
             self.write(file, WARNING_AND_FILE_DESCRIPTION, 2)
-            self.write(file, NAMESPACE_BEGIN_STRING, 2)
+            self.write(file, CAN_ID_NAMESPACE_BEGIN_STRING, 2)
             
-            self.write(file, ENUM_CLASS_CAN_BOARD_ID_BEGIN, 1)
-            # for loop
-            size = len(json_object["SourceIDs"])
-            for i in range(len(json_object["SourceIDs"])):
-                if 'ID' not in json_object['SourceIDs'][i]:
-                    generator = self.id_range_loop(json_object, i, "SourceIDs")
-                    gener_size = len(generator)
+            ID_types = [("SourceIDs", ENUM_CLASS_CAN_SOURCE_ID_BEGIN), 
+                        ("ParamIDs", ENUM_CLASS_CAN_PARAM_ID_BEGIN),
+                        ("GroupIDs", ENUM_CLASS_CAN_GROUP_ID_BEGIN),]
+            
+            for (ID_type, ENUM_CLASS_BEGIN) in ID_types:
+                self.write(file, ENUM_CLASS_BEGIN, 1)
+                # for loop
+                for i in range(len(json_object[ID_type])):
+                    if 'ID' not in json_object[ID_type][i]:
+                        generator = self.id_range_loop(json_object, i, ID_type, 2)
+
+                        for j in range(len(generator)):
+                                self.write(file, "\t{},".format(generator[j]), 1)
+                                
+                    else:
+                        self.write(file, "\t{} = {}".format(json_object[ID_type][i]["Name"], 
+                                                        json_object[ID_type][i]['ID']), 0)
+                        self.write(file, ",", 1)
+                        
+                                            
+                self.write(file, "\tUNKNOWN\n};", 2)
+
+            self.write(file, MESSAGE_t_STRUCT_DEFINITION, 2)
+            
+            self.write(file, MESSAGE_NAMESPACE_BEGIN_STRING, 2)
+            for Param in json_object["ParamIDs"]:
+                if 'ID' not in Param:
+                    generator = self.explode_IDs_into_mess_var(json_object, Param)
 
                     for j in range(len(generator)):
-                        if j == gener_size-1 and i == size-1:
-                            self.write(file, "\t{}".format(generator[j]), 1)
-                        else:
-                            self.write(file, "\t{},".format(generator[j]), 1)
-                else:
-                    self.write(file, "\t{} = {}".format(json_object['SourceIDs'][i]["Name"], 
-                                                      json_object["SourceIDs"][i]['ID']), 0)
-                    if i != size-1:
-                        self.write(file, ",", 1)
-                    else:
-                        self.write(file, "", 0)
+                        self.write(file, "constexpr Message_t {} =  {{{}, Param::{}, Group::{}}};".format(
+                                        generator[j], Param["Priority"], generator[j], Param["Group"]), 2)
                         
-            self.write(file, ENUM_CLASS_CAN_BOARD_ID_END, 2)
-    
+                else:
+                    self.write(file, "constexpr Message_t {} =  {{{}, Param::{}, Group::{}}};".format(
+                    Param["Name"], Param["Priority"], Param["Name"], Param["Group"]), 2)
+                
+            self.write(file, MESSAGE_NAMESPACE_END_STRING, 2)
             
-            # file.write(ENUM_CLASS_CAN_PARAMETERS_ID_BEGIN)
-            # size = len(json_object["Parameters"])
-            # for i in range(len(json_object["Parameters"])):
-            #     if 'ID' not in json_object['Parameters'][i]:
-            #         generator = self.id_range_loop(
-            #             json_object, i, "Parameters")
-            #         gener_size = len(generator)
-            #         for j in generator:
-            #             if j == gener_size-1 and i == size-1:
-            #                 file.write(j + "\n  ")
-            #             else:
-            #                 file.write(j + ",\n  ")
-            #     else:
-            #         file.write(json_object['Parameters'][i]["Name"] + " = ")
-            #         file.write(json_object["Parameters"][i]['ID'])
-            #         if i != size-1:
-            #             file.write(",\n  ")
-            #         else:
-            #             file.write("\n  ")
-            # file.write(ENUM_CLASS_CAN_PARAMETERS_ID_END)
-            
-            self.write(file, NAMESPACE_END_STRING, 0)
+            self.write(file, CAN_ID_NAMESPACE_END_STRING, 2)
+            self.write(file, "#endif", 0)

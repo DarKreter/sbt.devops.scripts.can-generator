@@ -77,48 +77,43 @@ class Checker:
 
     @staticmethod
     def compare_params_with_dbc(my_json, dbc_path):
-        jsonParamIDs = []
+        jsonParam = []
         for object in my_json['ParamIDs']:
             if "ID" in object:
-                jsonParamIDs.append(object["Name"])
+                jsonParam.append( (str(int(object["ID"],16)), object["Name"])  )
             else:
                 max_id = int(object['MaxID'], 16)
                 curr_id = int(object['MinID'], 16)
-                adresses = []
+                x = 1
                 while max_id >= curr_id:
-                    adresses.append(hex(curr_id))
-                    curr_id = curr_id + 1
-                x = 0
-                for j in range(len(adresses)):
+                    jsonParam.append( (str(curr_id), object["Name"].replace("<x>", str(x))) )             
+                    curr_id += 1
                     x += 1
-                    jsonParamIDs.append(object["Name"].replace("<x>", str(x)))              
+
                 
         # Using readlines() 
         dbc = open(dbc_path, 'r')
         Lines = dbc.readlines()
         
-        dbcParamIDs = []
+        dbcParam = []
         # Strips the newline character
         for line in Lines:
             if line.find("BO_") != -1:
-                x = line.split()[2][:-1]
-                dbcParamIDs.append(x)        
+                dbcParam.append( (line.split()[1], line.split()[2][:-1]) ) 
         
-        if len(dbcParamIDs) != len(jsonParamIDs):
+        if len(dbcParam) != len(jsonParam):
             print("List of ParamIDs is not equal to list of DBC frame names\n")
             raise
-        
-        jsonParamIDs.sort()
-        dbcParamIDs.sort()
-        
-        # for j in jsonParamIDs:
-        #     print(j)
-            
-        # for k in dbcParamIDs:
-        #     print(k)
-            
-        for i in range(len(jsonParamIDs)):
-            if jsonParamIDs[i] != dbcParamIDs[i]:
+
+        jsonParam.sort()
+        dbcParam.sort()
+
+        # for i in range(len(dbcParam)):
+        #     print("'{}' - '{}'".format(jsonParam[i][0], jsonParam[i][1]))
+        #     print("'{}' - '{}'".format(dbcParam[i][0], dbcParam[i][1]))
+
+        for i in range(len(dbcParam)):
+            if jsonParam[i][0] != dbcParam[i][0] or jsonParam[i][1] != dbcParam[i][1]:
                 print("List of ParamIDs is not equal to list of DBC frame names\n")
                 raise
 

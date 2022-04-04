@@ -114,7 +114,7 @@ class Checker:
 
         for i in range(len(dbcParam)):
             if jsonParam[i][0] != dbcParam[i][0] or jsonParam[i][1] != dbcParam[i][1]:
-                print("List of ParamIDs is not equal to list of DBC frame names\n")
+                print("ParamIDs from json file and dbc file doesn't match.")
                 raise
 
 

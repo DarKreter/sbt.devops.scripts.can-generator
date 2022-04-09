@@ -26,7 +26,7 @@ MESSAGE_t_STRUCT_DEFINITION = "struct Message_t {\n\
 \tGroup group;\n\
 };"
 
-class HGenerate:
+class SDK_gen:
 
     def __init__(self, name):
         self.name = name

@@ -6,7 +6,7 @@ coderdbc_path=../software.tools.c-coderdbc/build/coderdbc
 
 # You also need to enter DBC file path: 
 # (https://gitlab.com/solar-boat-pwr/miscellaneous.can-ids)
-dbc_path=../miscellaneous.can-ids/SBT.dbc
+dbc_path=../miscellaneous.can-ids/SBT-generic.dbc
 
 # .json file path is mandatory:
 # (https://gitlab.com/solar-boat-pwr/miscellaneous.can-ids)
